@@ -28,7 +28,8 @@ DEBUG = True
 APPEND_SLASH = True
 
 ALLOWED_HOSTS = ["localhost", 
-                 "127.0.0.1"]
+                 "127.0.0.1",
+                 "cqc-capstone-host.mybluemix.net"]
 
 
 # Application definition

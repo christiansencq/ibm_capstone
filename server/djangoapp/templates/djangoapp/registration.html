@@ -1,11 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    {% load static %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-    <body>
-    <!--Add a registration form here -->
-    </body>
-</html>
+{% extends 'djangoapp/base.html' %}
+
+{% block title %}
+    <title>Registration</title>
+{% endblock title %}
+
+{% block content %}
+
+<!--Add a registration form here -->
+{% if user.is_authenticated %}
+
+<div class="container">
+    <button class="dropbtn">{{user.first_name}}</button>
+    <div class="dropdown-content">
+        <a href="{% url 'djangoapp:logout-request' %}"> Logout </a>
+    </div>
+</div>
+
+{% else %}
+<h3> Sign up </h3>
+<br/>
+<form action="{% url 'djangoapp:registration' %}" method="POST">
+    <div class="container">
+        {% csrf_token %}
+        <h1>Sign Up</h1>
+        <br/>
+        <div class="form-group mt-2">
+            <label for="username"><h4>User Name</h4></label>
+            <input type="text" class="form-control" placeholder="UserName" name="username" required>
+            <label for="firstname"><h4>First Name</h4></label>
+            <input type="text" class="form-control" placeholder="First Name" name="firstname" required>
+            <label for="lastname"><h4> Last Name </h4> </label>
+            <input type="text" class="form-control" placeholder="Last Name" name="lastname" required>
+            <label for="password"><h4>Password</h4></label>
+            <input type="password" class="form-control" placeholder="Password" name="password" required>
+            <br/>
+            <button class="btn btn-primary mt-2" type="submit"> Sign Up </button>
+        </div>
+    </div>
+</form>
+
+{% endif %}
+
+{% endblock content %}

@@ -1,25 +1,60 @@
 
 
-
+{% block nav_bar %}
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="{% url 'index' %}">My Navbar</a>
+        <a class="navbar-brand" href="{% url 'djangoapp:index' %}">My Navbar</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+            <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-            <a class="nav-link" href="{% url 'about' %}">About</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link" href="{% url 'contact' %}">Contact</a>
-            </li>
-        </ul>
-        <form class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                <!-- Link to About Page -->
+                <a class="nav-link" href="{% url 'djangoapp:about' %}">About</a>
+                </li>
+                <li class="nav-item">
+                <!-- Link to Contact Us Page -->
+                <a class="nav-link" href="{% url 'djangoapp:contact' %}">Contact</a>
+                </li>
+            </ul>
+
+            <!--If the user IS authenticated-->
+            {% if user.is_authenticated %}
+            <div class="col">
+                <span> {{user.username}} </span>
+                <a class="btn btn-link" href={% url 'djangoapp:logout-request' %}>Logout</a>
+                {% comment %} <button type="submit" class="btn btn-primary" href="{% url 'djangoapp:logout-request' %}"> Logout </button> {% endcomment %}
+            </div>
+            <!--If the user is NOT Authenticated-->
+            {% else %}
+            <form action= "{% url 'djangoapp:login-request' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="username"> Username </label>
+                        <input type="text" class="form-control form-control-sm" id="username" placeholder="Username">
+                    </div>
+                    <div class="col">
+                        <label for="password"> Password </label>
+                        <input type="password" class="form-control form-control-sm" id="password" placeholder="Password">
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="submit" class="btn btn-primary btn-sm" href="{% url 'djangoapp:login-request' %}"> Login </button>
+                    </div>
+                    <div class="col-sm-1">
+                        <a class="btn btn-link btn-sm" href="{% url 'djangoapp:registration' %}"> Sign-Up </a>
+                    </div>
+                </div>
+            </form>
+
+            {% endif %}
+            
+            {% comment %} <form class="d-flex">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form> {% endcomment %}
         </div>
     </div>
 </nav>
+{% endblock %}
