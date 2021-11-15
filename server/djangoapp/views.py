@@ -43,9 +43,9 @@ def login_request(request):
             #If user is valid, call login method.
             login(request, user)
             return redirect('djangoapp:index')
-        # else:
-        #     context['alert'] = "Invalid Login"
-        #     return render(request, 'djangoapp/index.html', context)
+        else:
+            context['alert'] = "Invalid Login"
+            return render(request, 'djangoapp/index.html', context)
     
     #If its a GET request, just show the page.
 #    return render(request, 'djangoapp/index.html', context)

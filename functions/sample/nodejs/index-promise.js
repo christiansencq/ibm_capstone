@@ -5,7 +5,7 @@
 const Cloudant = require('@cloudant/cloudant');
 
 function main(params) {
-
+    
     const cloudant = Cloudant({
         url: params.COUCH_URL,
         plugins: { iamauth: { iamApiKey: params.IAM_API_KEY } }
@@ -13,6 +13,7 @@ function main(params) {
 
     let dbListPromise = getDbs(cloudant);
     return dbListPromise;
+    
 }
 
 function getDbs(cloudant) {
