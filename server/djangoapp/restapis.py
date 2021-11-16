@@ -40,7 +40,7 @@ def get_dealers_from_cf(url, **kwargs):
     info = []
     result = "success"
     # - Call get_request() with specified arguments
-    json_result, status_code = get_request(url, None)
+    json_result, status_code = get_request(url)
     if status_code == 200 and json_result:
         dealers = json_result["entries"]
         for dealer in dealers:
@@ -60,7 +60,9 @@ def get_dealer_by_id(url, dealerId):
     # Call get_request with a URL parameter
     info = None
     result = "ok"
-    json_result, status_code = get_request(url, None, dealerId=dealerId)
+    json_result, status_code = get_request(url, dealerId=dealerId)
+#    json_result, status_code = get_request(url, None, dealerId=dealerId)
+
     if status_code == 200 and json_result:
         # Get the row list in JSON as dealers
         dealers = json_result["entries"]
@@ -80,7 +82,8 @@ def get_dealers_by_state (url, state):
     state_dealers = []
     result = "ok"
     # Call get_request with a URL parameter
-    json_result, status_code = get_request(url, None, state=state)
+    json_result, status_code = get_request(url, state=state)
+    # json_result, status_code = get_request(url, None, state=state)
     if status_code == 200 and json_result:
         # Get the row list in JSON as dealers
         dealers = json_result["entries"]
