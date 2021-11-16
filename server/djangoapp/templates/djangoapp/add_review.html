@@ -1,18 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends 'djangoapp/base.html' %}
+
+{% block title %}
+
     <meta charset="UTF-8">
-    {% load static %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
+    <title>Add Review</title>
+    
+{% endblock title %}
 
-</head>
+{% block content %}
 
-    {% block content %}
+<script type="text/javascript">
+        
+    function purchaseCheckboxChanged()
+    {
+        if($('#purchasecheck').is(":checked"))   
+            $("#purchasedata").show();
+        else
+            $("#purchasedata").hide();
+    }
+</script>
 
-    {% endblock %}
 
-</html>
+{% if error %}     
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true" style="font-size:20px">×</span>
+    </button>
+    <strong>Post review failed!</strong> {{error}}
+</div>
+{% endif %}
+
+<button class="mt-5 ml-5 mr-5"> <a href="{% url 'djangoapp:dealer_details' dealer_id=dealer.id %}" ><h5>Back to reviews</h5> </a> </button>
+{% if result == "ok"  %}
+<h2 class="mt-2 ml-5 mr-5">Add review about {{ dealer.full_name }}</h2>
+{% else %}
+<h2 class="mt-2 ml-5 mr-5">Add review</h2>
+{% endif %}
+
+<form action="{% url 'djangoapp:add_review' dealer.id%}" method="post">
+{% csrf_token %}
+    <div class="container" style="margin: 2rem!important;"> 
+        <div class="form-group mt-2">
+            <label for="content" class="mt-1"><b>Write review content:</b></label>
+            <textarea class="form-control" id="content" name="content" rows="2" required></textarea>
+            <label for="purchasecheck" class="mt-1"><b>Check if a car was purchased </b></label>
+            <input class="form-check-input ml-1" type="checkbox" name="purchasecheck" id="purchasecheck" onchange="purchaseCheckboxChanged()" style="margin-top: 0.65rem!important;">
+            <div id="purchasedata" style="display: none;">
+                <label for="car" class="mt-1"><b>Select purchased car: </b></label>
+                <select name="car" id="car" class="form-select">
+                    {% for car in cars %}
+                        <option selected value={{car.id}}>{{car}}</option>
+                    {% endfor %}
+                </select>
+                <label for="purchasedate" class="mt-1" style="display: block;"><b>Select purchase date: </b></label>
+                <input class="date-own form-control" type="text" name="purchasedate" id="purchasedate">
+            </div>
+            <button class="btn btn-primary mt-2" type="submit" style="display: block;">Submit</button>
+        </div>
+    </div>
+</form>
+
+<script type="text/javascript">
+
+$('.date-own').datepicker({
+    format: 'mm/dd/yyyy'
+});
+
+window.addEventListener('load', function () {
+    purchaseCheckboxChanged()
+});
+
+</script>
+
+{% endblock content %}

@@ -1,18 +1,66 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+{% extends 'djangoapp/base.html' %}
+
+{% block title %}
+
     <meta charset="UTF-8">
     <title>Dealership Review</title>
-    {% load static %}
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-</head>
+    
+{% endblock title %}
 
-    <body>
+{% block content %}
 
-    <!--Add a nav bar here -->
+{% if dealer_result != "ok" %}     
+<div class="alert alert-danger">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true" style="font-size:20px">×</span>
+    </button>
+    <strong>Dealer details request failed!</strong> {{dealer_result}}
+</div>
+{% else %}
+<h2  class="mt-3 ml-4 mr-4">Reviews from {{ dealer.full_name }}</h2>
+    {% if review_result != "ok"  %}
+        {% if review_result == "No reviews from this dealer on database"  %}
+            <div class="alert alert-warning">
+                {{review_result}}
+            </div>
+        {% else %}
+            <div class="alert alert-danger">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true" style="font-size:20px">×</span>
+                </button>
+                <strong>Dealer details request failed!</strong> {{review_result}}
+            </div>
+        {% endif %}
+    {% elif reviews %}
+        <div class="container m-2">
+            <div class="card-deck">
+                {% for review in reviews %}
+                    <div class="card m-3 p-3 bg-light" style="min-width: 18rem!important; max-width: 18rem!important">
+                        {% comment %} {% if  review.sentiment == "positive" %}
+                            <img class="card-img-left w-25" src="{{MEDIA_URL}}emoji/positive.png">
+                        {% elif review.sentiment == "neutral"%}
+                            <img class="card-img-left w-25" src="{{MEDIA_URL}}emoji/neutral.png">
+                        {% else %}
+                            <img class="card-img-left w-25" src="{{MEDIA_URL}}emoji/negative.png"> {% endcomment %}
+                        {% endif %}
+                            <div class="card-body">
+                                <h5 class="card_title"> {{ review.name }}  </h5>
+                                {% if  review.purchase %}
+                                    <h6 class="card_title"> {{ review.car_make }} {{ review.car_model }} {{ review.car_year }}</h6>
+                                {% else %}
+                                    <h6 class="card_title">Without purchase</h6>
+                                {% endif %}
+                                <p class="card-text">{{ review.review }}</p>
+                            </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
 
-    <!-- Add reviews as cards -->
+{% if user.is_authenticated %}
+<button class="m-4"> <a href="{% url 'djangoapp:add_review' dealer_id=dealer.id %}" ><h5>Add review</h5> </a> </button>
+{% endif %}
 
-    </body>
-
-</html>
+{% endblock content %}
