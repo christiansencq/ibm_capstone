@@ -3,8 +3,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from .models import CarModel
-from .restapis import post_request, get_dealers_from_cf, get_dealer_reviews_from_cf, get_dealer_by_id
-# get_dealer_reviews_from_cf
+from .restapis import post_request, get_dealers_from_cf, get_dealer_by_id
+
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -121,9 +121,9 @@ def get_dealer_details(request, dealer_id):
         context["dealer"] = dealer
         context["dealer_result"] = dealer_status
 
-        reviews, review_status = get_dealer_reviews_from_cf(review_url, dealer_id)
-        context["reviews"]=reviews
-        context["review_result"]=review_status
+        # reviews, review_status = get_dealer_reviews_from_cf(review_url, dealer_id)
+        # context["reviews"]=reviews
+        # context["review_result"]=review_status
 
         return render(request, 'djangoapp/dealer_details.html', context)
 
