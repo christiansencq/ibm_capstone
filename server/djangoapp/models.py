@@ -11,16 +11,16 @@ from django.utils.timezone import now
 # - __str__ method to print a car make object
 
 class CarMake(models.Model):
-    name = models.CharField(max_length=50)
-    description = models.TextField()
+    name = models.CharField(null=False, max_length=50)
+    description = models.TextField(null=True)
 
     def __str__(self):
         return self.name
 
 class CarModel(models.Model):
-    make = ForeignKey(CarMake, on_delete=models.CASCADE)
+    make = ForeignKey(CarMake, null=False, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
-    dealer_id = models.IntegerField()
+    dealer_id = models.CharField(max_length=40)
 
     type_choices = [ ('SEDAN', 'Sedan'),
                      ('SUV', 'SUV'),
@@ -38,7 +38,7 @@ class CarModel(models.Model):
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
 class CarDealer:
     def __init__(self, address, city, full_name, id, 
-                    lat, long, short_name, st, zip):
+                    lat, long, short_name, st, state, zip):
         self.address = address
         self.city = city
         self.full_name = full_name
@@ -47,6 +47,7 @@ class CarDealer:
         self.long = long
         self.short_name = short_name
         self.st = st
+        self.state = state
         self.zip = zip
 
     def __str__(self):
@@ -57,7 +58,7 @@ class CarDealer:
 
 
 class DealerReview():
-    def __init__(self, id, name, review, purchase, car_make, car_model, car_year, purchase_date, sentiment):
+    def __init__(self, id, name, review, purchase, car_make, car_model, car_year, purchase_date):
         self.id = id
         self.name = name
         self.review = review
@@ -66,7 +67,6 @@ class DealerReview():
         self.car_model = car_model
         self.car_year = car_year
         self.purchase_date = purchase_date
-        self.sentiment = sentiment
 
     def __str__(self):
         return self.name

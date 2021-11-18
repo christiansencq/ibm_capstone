@@ -7,6 +7,16 @@
     
 {% endblock title %}
 
+
+{% block bootstrap %}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
+{% endblock bootstrap %}
+
+
 {% block content %}
 
 <script type="text/javascript">
@@ -30,14 +40,14 @@
 </div>
 {% endif %}
 
-<button class="mt-5 ml-5 mr-5"> <a href="{% url 'djangoapp:dealer_details' dealer_id=dealer.id %}" ><h5>Back to reviews</h5> </a> </button>
+<button class="mt-5 ml-5 mr-5"> <a href="{% url 'djangoapp:dealer_details' dealer_id=dealer_id %}" ><h5>Back to reviews</h5> </a> </button>
 {% if result == "ok"  %}
 <h2 class="mt-2 ml-5 mr-5">Add review about {{ dealer.full_name }}</h2>
 {% else %}
 <h2 class="mt-2 ml-5 mr-5">Add review</h2>
 {% endif %}
 
-<form action="{% url 'djangoapp:add_review' dealer.id%}" method="post">
+<form action="{% url 'djangoapp:add_review' dealer_id=dealer_id %}" method="post">
 {% csrf_token %}
     <div class="container" style="margin: 2rem!important;"> 
         <div class="form-group mt-2">

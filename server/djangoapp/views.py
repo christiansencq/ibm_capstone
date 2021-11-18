@@ -2,9 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-from .models import CarModel
-from .restapis import post_request, get_dealers_from_cf, get_dealer_by_id
-
+from .models import CarModel, CarMake, CarDealer, DealerReview
+from .restapis import post_request, get_dealers_from_cf, get_dealer_reviews_from_cf, get_dealer_by_id
+from django.db.utils import OperationalError
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -12,9 +12,20 @@ import logging
 import json
 import os
 
+carmake_list = [('', '(all)')]
+carmodel_list = [('', '(all)')]
+try:
+    carmake_list.extend([(i[0],i[0])
+        for i in CarMake.objects.values_list('name')])
+    carmodel_list.extend([(i[0], i[0])
+        for i in CarModel.objects.values_list('name')])
+except OperationalError:
+    pass
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
+
+
 
 
 # Create your views here.
@@ -121,9 +132,11 @@ def get_dealer_details(request, dealer_id):
         context["dealer"] = dealer
         context["dealer_result"] = dealer_status
 
-        # reviews, review_status = get_dealer_reviews_from_cf(review_url, dealer_id)
-        # context["reviews"]=reviews
-        # context["review_result"]=review_status
+        reviews, review_status = get_dealer_reviews_from_cf(review_url, dealer_id)
+        context["reviews"]=reviews
+        context["review_result"]=review_status
+
+        context["dealer_id"] = dealer_id
 
         return render(request, 'djangoapp/dealer_details.html', context)
 
@@ -139,7 +152,7 @@ def add_review(request, dealer_id):
         context["result"] = dealer_status
         cars = CarModel.objects.all().filter(dealer_id=dealer_id)
         context["cars"] = cars
-
+        context["dealer_id"] = dealer_id
         return render(request, "djangoapp/add_review.html", context)
 
     elif request.method == "POST":
@@ -160,10 +173,10 @@ def add_review(request, dealer_id):
                      
             json_payload = dict()
             json_payload["review"] = review
-            result, status_code = post_request(url, json_payload, dealerId = dealer_id)
+            result, status_code = post_request(url, json_payload, dealer_id = dealer_id)
             print(result)
 
-            if (result["ok"]):
+            if (result.get('message') == "ok"):
                 return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
             else:
                 context=dict()
@@ -176,6 +189,7 @@ def add_review(request, dealer_id):
             dealer, dealer_status = get_dealer_by_id(url, dealer_id)
             context["dealer"] = dealer
             context["result"] = dealer_status
+            context["dealer_id"] = dealer_id
             cars = CarModel.objects.all().filter(dealer_id = dealer_id)
             
             return render(request, "djangoapp/add_review.html", context)

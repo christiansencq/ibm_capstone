@@ -7,6 +7,13 @@
     
 {% endblock title %}
 
+
+{% block bootstrap %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+{% endblock bootstrap %}  
+
+
 {% block content %}
 
 {% if dealer_result != "ok" %}     
@@ -17,7 +24,7 @@
     <strong>Dealer details request failed!</strong> {{dealer_result}}
 </div>
 {% else %}
-<h2  class="mt-3 ml-4 mr-4">Reviews from {{ dealer.full_name }}</h2>
+<h2  class="mt-3 ml-4 mr-4">Reviews</h2>
     {% if review_result != "ok"  %}
         {% if review_result == "No reviews from this dealer on database"  %}
             <div class="alert alert-warning">
@@ -32,17 +39,13 @@
             </div>
         {% endif %}
     {% elif reviews %}
+        {% comment %} <p> Dealer Id {{dealer.id}} </p> </br>
+        <p> Dealer_Id {{dealer_id}} </p> </br> {% endcomment %}
         <div class="container m-2">
             <div class="card-deck">
                 {% for review in reviews %}
                     <div class="card m-3 p-3 bg-light" style="min-width: 18rem!important; max-width: 18rem!important">
-                        {% comment %} {% if  review.sentiment == "positive" %}
-                            <img class="card-img-left w-25" src="{{MEDIA_URL}}emoji/positive.png">
-                        {% elif review.sentiment == "neutral"%}
-                            <img class="card-img-left w-25" src="{{MEDIA_URL}}emoji/neutral.png">
-                        {% else %}
-                            <img class="card-img-left w-25" src="{{MEDIA_URL}}emoji/negative.png"> {% endcomment %}
-                        {% endif %}
+
                             <div class="card-body">
                                 <h5 class="card_title"> {{ review.name }}  </h5>
                                 {% if  review.purchase %}
@@ -60,7 +63,9 @@
 {% endif %}
 
 {% if user.is_authenticated %}
-<button class="m-4"> <a href="{% url 'djangoapp:add_review' dealer_id=dealer.id %}" ><h5>Add review</h5> </a> </button>
+{% comment %} <button class="m-4"> <a href="{% url 'djangoapp:add_review' dealer_id=dealer.id %}" ><h5>Add review</h5> </a> </button> {% endcomment %}
+
+<button class="m-4"> <a href="{% url 'djangoapp:add_review' dealer_id=dealer_id %}" ><h5>Add review</h5> </a> </button>
 {% endif %}
 
 {% endblock content %}
